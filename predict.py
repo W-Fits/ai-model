@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.parallel
+import torchvision.utils
 import models.fashion as models
 import transforms
 from PIL import Image
@@ -39,16 +40,25 @@ transform = transforms.Compose([
     transforms.Grayscale(num_output_channels=1),  # Ensure single channel (grayscale)
     transforms.Resize((28, 28)),                  # Resize image to 28x28
     transforms.ToTensor(),                        # Convert image to a PyTorch tensor
-    transforms.Normalize((0.5,), (0.5,))          # Normalize pixel values to range [-1, 1]
+    transforms.Normalize((0.1307,), (0.3081,))    # Normalize pixel values to range [-1, 1]
+])
+
+testTransform = transforms.Compose([
+    transforms.Grayscale(num_output_channels=1),  # Ensure single channel (grayscale)
+    transforms.Resize((28, 28)),                  # Resize image to 28x28
+    transforms.ToTensor()                         # Convert image to a PyTorch tensor
 ])
 
 # Function to predict the output class of an image
 def predict_image(image_path, model):
     # Load the image
     image = remove_background(image_path)
+    image.save("testBgRemoved.png")
     
     # Preprocess the image
     input_tensor = transform(image).unsqueeze(0)  # Add batch dimension
+    torchvision.utils.save_image(testTransform(image), "transformedImage.jpg")
+    torchvision.utils.save_image(transform(image), "transformedNormalizedImage.jpg")
 
     # Make predictions
     with torch.no_grad():
@@ -59,6 +69,6 @@ def predict_image(image_path, model):
     return class_names[predicted_class]
 
 # Usage
-image_path = "test.jpeg"
+image_path = "test1.jpg"
 predicted_label = predict_image(image_path, model)
 print(f"Predicted Label: {predicted_label}")

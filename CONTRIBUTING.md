@@ -5,8 +5,6 @@
 ```bash
 ├── checkpoint/        # Stores the best and latest checkpoint from the AI training Process
 ├── data/              # RAW training data
-├── docs/              # Documentation folder
-    ├── DOCS.md
 ├── models/            # Contains the different models that can be used for training
 ├── utils/             # Contains code used in the training process
 ├── .gitignore         # GitIgnore folder

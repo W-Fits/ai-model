@@ -21,11 +21,15 @@ model = models.__dict__['wrn'](
     num_classes=10,
     depth=28,
     widen_factor=10,
-    dropRate=0,
+    dropRate=0
 )
-model = torch.nn.DataParallel(model).cuda()
+if torch.cuda.is_available():
+    model = torch.nn.DataParallel(model).cuda()
+    checkpoint = torch.load("checkpoint\model_best.pth.tar")
+else:
+    model = torch.nn.DataParallel(model)
+    checkpoint = torch.load("checkpoint\model_best.pth.tar", map_location=torch.device('cpu'))
 
-checkpoint = torch.load("checkpoint\model_best.pth.tar")
 model.load_state_dict(checkpoint['state_dict'])
 model.eval()  # Set the model to evaluation mode
 
